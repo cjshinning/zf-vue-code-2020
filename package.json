@@ -1,0 +1,28 @@
+{
+  "name": "zf-vue-code-2020",
+  "version": "1.0.0",
+  "description": "learning vue source code",
+  "main": "index.js",
+  "scripts": {
+    "serve": "rollup -c -w"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cjshinning/zf-vue-code-2020.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cjshinning/zf-vue-code-2020/issues"
+  },
+  "homepage": "https://github.com/cjshinning/zf-vue-code-2020#readme",
+  "devDependencies": {
+    "@babel/core": "^7.15.8",
+    "@babel/preset-env": "^7.15.8",
+    "cross-env": "^7.0.2",
+    "rollup": "^2.58.0",
+    "rollup-plugin-babel": "^4.4.0",
+    "rollup-plugin-serve": "^1.0.4"
+  }
+}
