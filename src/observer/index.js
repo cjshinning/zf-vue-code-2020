@@ -1,18 +1,34 @@
 // 把data中的数据 都使用Object.defineProperty重新定义 es5
-
-import { isObject } from '../util/index';
+import { arrayMethods } from './array';
+import { isObject, def } from '../util/index';
 
 class Observer {
   constructor(value) {
     // 如果vue数据的层次过多 需要地怪的去解析对象中的熟悉，依次增加set和get方法
     // vue3 proxy
-    this.walk(value);
+    // value.__ob__ = this;  //给每一个监控过的对象都增加一个__ob__属性
+    def(value, '__ob__', this);
+    if (Array.isArray(value)) {
+      // 如果是数组的话并不会对索引进行观测 因为会导致性能问题
+      // 前端开发中很少操作索引 push shift unshift
+      // 如果数组里放的是对象我再监控
+      value.__proto__ = arrayMethods;
+      this.oberverArray(value);
+    } else {
+      // 对象数据监控
+      this.walk(value);
+    }
   }
   walk(data) {
     let keys = Object.keys(data);  // ['name', 'age', 'address']
     keys.forEach((key) => {
       defineReactive(data, key, data[key]); //定义响应式数据
     })
+  }
+  oberverArray(value) {
+    for (let i = 0; i < value.length; i++) {
+      observe(value[i]);
+    }
   }
 }
 
