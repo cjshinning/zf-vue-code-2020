@@ -48,3 +48,7 @@ array.splice(start[, deleteCount[, item1[, item2[, ...]]]])
 ### ast语法树和虚拟dom
 - ast语法树：用对象来描述原生语法  
 - 虚拟dom：用对象来描述dom节点
+
+## 6.html-parser
+- compiler/index.js 
+  parseHTML实现将模板转换成ast语法树，其中主要是用到正则匹配
