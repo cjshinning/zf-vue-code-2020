@@ -32,3 +32,19 @@
 2. 对于会改变数组的7个常用方法进行遍历，如果是新增属性需要对新增的属性进行数据劫持，设置新增变量inserted
 3. 如果是push或者unshift，新增变量就是传入的参数args，如果是splice，它可能会删除也可能替换也可能新增，由于前两个参数都是常量，改变的只是第3个位置开始的数组，所以是args.slice(2)截取新增或者修改的变量
 4. 判断是否新增变量inserted，如果有对新增的变量再次使用oberverArray进行检测（注意这里在observer/index.js 中通过def(value, '__ob__', this);预先添加了__ob__属性，然后在当前文件中使用let ob = this.__ob__;获取到ob）
+### 补充splice用法：
+array.splice(start[, deleteCount[, item1[, item2[, ...]]]])
+- start​ 指定修改的开始位置（从0计数）。如果超出了数组的长度，则从数组末尾开始添加内容；如果是负值，则表示从数组末位开始的第几位（从-1计数，这意味着-n是倒数第n个元素并且等价于 array.length-n）；如果负数的绝对值大于数组的长度，则表示开始位置为第0位。
+- deleteCount 可选  整数，表示要移除的数组元素的个数。
+- item1, item2, ... 可选 要添加进数组的元素,从 start 位置开始。如果不指定，则 splice() 将只删除数组元素。
+
+## 5.模板编译
+- init.js 
+  _init方法中判断是否有el，如果有添加$mount方法进行挂载
+  $mount方法中默认先回查找有没有render，没有render会采用template，没有template就用el中的内容
+  使用compileToFunction对模板进行编译
+- compiler/index.js 
+  添加各种正则匹配
+### ast语法树和虚拟dom
+- ast语法树：用对象来描述原生语法  
+- 虚拟dom：用对象来描述dom节点
