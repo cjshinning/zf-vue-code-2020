@@ -10,14 +10,53 @@ const startTagClose = /^\s*(\/?)>/;
 // 匹配 {{ }} 表达式
 const defaultTagRE = /\{\{((?:.|\r?\n)+?)\}\}/g;
 
+let root = null;  //ast语法的树根
+let currentParent = null; //标识当前父亲是谁
+let stack = [];
+const ELEMENT_TYPE = 1;
+const TEXT_TYPE = 3;
+
+function createASTElement(tagName, attrs) {
+  return {
+    tag: tagName,
+    type: ELEMENT_TYPE,
+    children: [],
+    attrs,
+    parent: null
+  }
+}
+
+// [div, p, span]
+// < div > <p><span></span></p></div>
+
 function start(tagName, attrs) {
-  console.log('开始标签：', tagName, '属性是：', attrs);
+  // console.log('开始标签：', tagName, '属性是：', attrs);
+  // 遇到开始标签就创建一个ast元素
+  let element = createASTElement(tagName, attrs);
+  if (!root) {
+    root = element;
+  }
+  currentParent = element;  //把当前元素标记成父ast树
+  stack.push(element);
 }
 function chars(text) {
-  console.log('文本是：', text);
+  // console.log('文本是：', text);
+  text = text.replace(/\s/g, '');
+  if (text) {
+    currentParent.children.push({
+      text,
+      type: TEXT_TYPE
+    })
+  }
 }
 function end(tagName) {
-  console.log('结束标签：', tagName);
+  // console.log('结束标签：', tagName);
+  let element = stack.pop();
+  currentParent = stack[stack.length - 1];
+  if (currentParent) {
+    element.parent = currentParent;
+    currentParent.children.push(element); //实现了树的关系
+  }
 }
 function parseHTML(html) {
   // 不停的解析html
@@ -27,13 +66,13 @@ function parseHTML(html) {
       // 如果当前索引为0，肯定是一个标签 开始标签 或 结束标签
       let startTagMatch = parseStartTag(); //通过这个方法获取到匹配的结果 tagName attrs
       if (startTagMatch) {
-        start(startTagMatch.tagName, startTagMatch.attrs);
+        start(startTagMatch.tagName, startTagMatch.attrs); //1.解析开始标签
         continue; //如果开始标签匹配完毕 继续下一次匹配
       }
       let endTagMatch = html.match(endTag);
       if (endTagMatch) {
         advance(endTagMatch[0].length);
-        end(endTagMatch[1]);
+        end(endTagMatch[1]);  //2.解析结束标签
         continue;
       }
     }
@@ -43,7 +82,7 @@ function parseHTML(html) {
     }
     if (text) {
       advance(text.length);
-      chars(text);
+      chars(text);  //3.解析文本标签
     }
   }
   function advance(n) {
@@ -67,12 +106,13 @@ function parseHTML(html) {
         return match;
       }
     }
-
   }
+  return root;
 }
 
 export function compileToFunction(template) {
   let root = parseHTML(template);
+  console.log(root);
   return function render() {
 
   }

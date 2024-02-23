@@ -52,3 +52,7 @@ array.splice(start[, deleteCount[, item1[, item2[, ...]]]])
 ## 6.html-parser
 - compiler/index.js 
   parseHTML实现将模板转换成ast语法树，其中主要是用到正则匹配
+
+## 7.将html转换成ast树
+- 分别对开始元素、文本、结束元素创建ast语法树
+- 结束的时候才能判断是否是子节点
