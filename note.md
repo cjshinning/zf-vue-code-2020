@@ -56,3 +56,9 @@ array.splice(start[, deleteCount[, item1[, item2[, ...]]]])
 ## 7.将html转换成ast树
 - 分别对开始元素、文本、结束元素创建ast语法树
 - 结束的时候才能判断是否是子节点
+
+## 8.生成代码
+- compiler/index.js 
+  generate函数生成对应代码，核心思想就是将模板转换成 下面这段字符串
+  <div id="app"><p>hello {{ name }}</p></div>
+  _c("div", { id: app }, _c("p", undefined, _v('hello' + _s(name)), _v('hello')))
