@@ -62,3 +62,9 @@ array.splice(start[, deleteCount[, item1[, item2[, ...]]]])
   generate函数生成对应代码，核心思想就是将模板转换成 下面这段字符串
   <div id="app"><p>hello {{ name }}</p></div>
   _c("div", { id: app }, _c("p", undefined, _v('hello' + _s(name)), _v('hello')))
+
+## 9.生成render函数
+- 模板引擎实现方法：
+   1. 拼接字符串 
+   2. 增加with 
+   3. new Function
