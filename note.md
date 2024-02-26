@@ -68,3 +68,5 @@ array.splice(start[, deleteCount[, item1[, item2[, ...]]]])
    1. 拼接字符串 
    2. 增加with 
    3. new Function
+
+## 10.代理_data属性-proxy

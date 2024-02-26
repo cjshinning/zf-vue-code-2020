@@ -1,4 +1,5 @@
 import { observe } from './observer/index';
+import { proxy } from './util/index';
 export function initState(vm) {
   const opts = vm.$options;
   // vue的数据来源 属性 方法 数据 计算属性 watch
@@ -21,6 +22,7 @@ export function initState(vm) {
 
 function initProps() { }
 function initMethod() { }
+
 function initData(vm) {
   // 数据初始化工作
   let data = vm.$options.data;  //用户传递的data
@@ -29,6 +31,12 @@ function initData(vm) {
   // MVVM模式 数据变化驱动试图
 
   // Object.defineProperty() 给属性增加get方法和set方法
+
+  // 为了让用户更好的使用，直接vm.xx取值
+  for (let key in data) {
+    proxy(vm, '_data', key);
+  }
+
   observe(data);  //响应式原理
 }
 function initComputed() { }
