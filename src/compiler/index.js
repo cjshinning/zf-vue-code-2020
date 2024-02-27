@@ -85,9 +85,7 @@ export function compileToFunction(template) {
   // 模板引擎的原理：1.拼接字符串 2.增加with 3.new Function
   let renderFn = new Function(`with(this){return ${code}}`)
   console.log(renderFn);
-  return function render() {
-
-  }
+  return renderFn;
 }
 
 /**

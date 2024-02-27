@@ -70,3 +70,39 @@ array.splice(start[, deleteCount[, item1[, item2[, ...]]]])
    3. new Function
 
 ## 10.代理_data属性-proxy
+### 模板编译流程的总结：
+- 模板
+  `<div id="app"><p>hello {{ name }}</p></div>`
+- AST语法树
+  `
+    {
+      tage: 'div',
+      attrs: [{ name: id, value: 'app' }],
+      parent: {tag: 'div', type: 1, children: Array(1), attrs: Array(2), parent: null},
+      type: 1,
+      children: [
+        {
+          tag: 'p',
+          attrs: [],
+          parent: root,
+          type: 1,
+          children: [
+            {
+              text: 'hello{{name}}',
+              type: 3
+            }
+          ]
+        }
+      ]
+    }
+  `
+  ******************************
+  实现：`let root = parseHTML(template);`
+- 虚拟dom：
+  `_c("div",{id:"app",style:{"color":" red","background":" blue"}},_c("p",undefined,_v("hello"+_s(name))))`
+  ******************************
+  实现：`let code = generate(root);`
+- render函数：`const render = compileToFunction(template);`
+  `ƒ anonymous() { with(this){return _c("div",{id:"app",style:{"color":" red","background":" blue"}},_c("p",undefined,_v("hello"+_s(name))))}}`  
+  ******************************
+  实现：`const render = compileToFunction(template);`
