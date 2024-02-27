@@ -112,3 +112,22 @@ array.splice(start[, deleteCount[, item1[, item2[, ...]]]])
   $mount 方法中新增mountComponent方法
 - lifecycle.js
   mountComponent 方法实现组件挂载
+
+## 12.初次渲染
+- lifecycle.js
+  mountComponent方法中新增updateComponent方法，并使用Watcher设置关联，触发里面的get方法
+  通过vm._update(vm._render());拿到最新的虚拟dom
+  其中_update方法中新增patch方法，通过虚拟节点对比渲染出真实dom
+- render.js
+  从实例上拿到vm.$options里面的render方法，执行一下生成虚拟dom
+  其中涉及三个方法：
+  - _c 创建元素的虚拟节点
+  - _v 创建文本的虚拟节点
+  - _s JSON.stringify
+- vdom/patch.js
+  - 判断是更新还是要渲染
+  - 递归创建真实节点，替换掉老的节点
+- vdom/create-element.js
+  基本实现流程：
+  - 将template转成ast语法树 -> 生成render方法 -> 生成虚拟dom -> 真实的dom
+  - 重新生成虚拟dom -> 更新dom
