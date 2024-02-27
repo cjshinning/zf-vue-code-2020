@@ -106,3 +106,9 @@ array.splice(start[, deleteCount[, item1[, item2[, ...]]]])
   `ƒ anonymous() { with(this){return _c("div",{id:"app",style:{"color":" red","background":" blue"}},_c("p",undefined,_v("hello"+_s(name))))}}`  
   ******************************
   实现：`const render = compileToFunction(template);`
+
+## 11.初始化渲染流程
+- init.js 
+  $mount 方法中新增mountComponent方法
+- lifecycle.js
+  mountComponent 方法实现组件挂载

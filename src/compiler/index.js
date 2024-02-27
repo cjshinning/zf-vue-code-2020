@@ -71,10 +71,8 @@ function generate(el) {
 
 export function compileToFunction(template) {
   let root = parseHTML(template);
-  console.log(root);
 
   let code = generate(root);
-  console.log(code);
 
   // 核心思想就是将模板转换成 下面这段字符串
   // <div id="app"><p>hello {{ name }}</p></div>
@@ -84,7 +82,6 @@ export function compileToFunction(template) {
   // 所有的模板引擎实现 都需要new Function + with
   // 模板引擎的原理：1.拼接字符串 2.增加with 3.new Function
   let renderFn = new Function(`with(this){return ${code}}`)
-  console.log(renderFn);
   return renderFn;
 }
 
