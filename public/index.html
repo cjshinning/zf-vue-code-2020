@@ -27,7 +27,16 @@
           name: 'jenny',
           age: 18
         }
-      }
+      },
+      beforeCreate() {
+        console.log('user', this.age);
+      },
+      beforeMount() {
+        console.log(this.$el, '前');
+      },
+      mounted() {
+        console.log(this.$el, '后');
+      },
     })
 
     // vm.name => vm._data.name

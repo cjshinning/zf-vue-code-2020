@@ -128,6 +128,16 @@ array.splice(start[, deleteCount[, item1[, item2[, ...]]]])
   - 判断是更新还是要渲染
   - 递归创建真实节点，替换掉老的节点
 - vdom/create-element.js
-  基本实现流程：
+  vue渲染基本流程实现：
   - 将template转成ast语法树 -> 生成render方法 -> 生成虚拟dom -> 真实的dom
   - 重新生成虚拟dom -> 更新dom
+  vue渲染的基本流程：
+  先进行数据劫持，把模板template转成ast语法树，然后生成render方法，通过render方法生成虚拟dom，再去更新页面，最后再替换掉原有的真实dom
+
+## 13.生命周期的合并策略
+- initGlobalAPI/index.js
+  - 使用方法initGlobalAPI初始化全局的api
+  - Vue.mixin混入的实现，主要是使用mergeOptions来实现混合
+  - 其中mergeOptions中对于生命周期等钩子函数进行不同的策略合并，
+  - mergeField合并字段方法中，判断是否是strats中的key，如果是就使用策略方法合并
+  - mergeHook如果多个同名钩子合并会生成数组

@@ -10,55 +10,55 @@ const startTagClose = /^\s*(\/?)>/;
 // 匹配 {{ }} 表达式
 const defaultTagRE = /\{\{((?:.|\r?\n)+?)\}\}/g;
 
-let root = null;  //ast语法的树根
-let currentParent = null; //标识当前父亲是谁
-let stack = [];
-const ELEMENT_TYPE = 1;
-const TEXT_TYPE = 3;
-
-function createASTElement(tagName, attrs) {
-  return {
-    tag: tagName,
-    type: ELEMENT_TYPE,
-    children: [],
-    attrs,
-    parent: null
-  }
-}
-
-// [div, p, span]
-// < div > <p><span></span></p></div>
-
-function start(tagName, attrs) {
-  // console.log('开始标签：', tagName, '属性是：', attrs);
-  // 遇到开始标签就创建一个ast元素
-  let element = createASTElement(tagName, attrs);
-  if (!root) {
-    root = element;
-  }
-  currentParent = element;  //把当前元素标记成父ast树
-  stack.push(element);
-}
-function chars(text) {
-  // console.log('文本是：', text);
-  text = text.replace(/\s/g, '');
-  if (text) {
-    currentParent.children.push({
-      text,
-      type: TEXT_TYPE
-    })
-  }
-}
-function end(tagName) {
-  // console.log('结束标签：', tagName);
-  let element = stack.pop();
-  currentParent = stack[stack.length - 1];
-  if (currentParent) {
-    element.parent = currentParent;
-    currentParent.children.push(element); //实现了树的关系
-  }
-}
 export function parseHTML(html) {
+  let root = null;  //ast语法的树根
+  let currentParent = null; //标识当前父亲是谁
+  let stack = [];
+  const ELEMENT_TYPE = 1;
+  const TEXT_TYPE = 3;
+
+  function createASTElement(tagName, attrs) {
+    return {
+      tag: tagName,
+      type: ELEMENT_TYPE,
+      children: [],
+      attrs,
+      parent: null
+    }
+  }
+
+  // [div, p, span]
+  // < div > <p><span></span></p></div>
+
+  function start(tagName, attrs) {
+    // console.log('开始标签：', tagName, '属性是：', attrs);
+    // 遇到开始标签就创建一个ast元素
+    let element = createASTElement(tagName, attrs);
+    if (!root) {
+      root = element;
+    }
+    currentParent = element;  //把当前元素标记成父ast树
+    stack.push(element);
+  }
+  function chars(text) {
+    // console.log('文本是：', text);
+    text = text.replace(/\s/g, '');
+    if (text) {
+      currentParent.children.push({
+        text,
+        type: TEXT_TYPE
+      })
+    }
+  }
+  function end(tagName) {
+    // console.log('结束标签：', tagName);
+    let element = stack.pop();
+    currentParent = stack[stack.length - 1];
+    if (currentParent) {
+      element.parent = currentParent;
+      currentParent.children.push(element); //实现了树的关系
+    }
+  }
   // 不停的解析html
   while (html) {
     let textEnd = html.indexOf('<');

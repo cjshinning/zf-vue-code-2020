@@ -35,6 +35,8 @@ class Observer {
 function defineReactive(data, key, value) {
   observe(value); //递归实现深度检测
   Object.defineProperty(data, key, {
+    configurable: true,
+    enumerable: true,
     get() { //获取值的时候做一些操作
       return value;
     },
