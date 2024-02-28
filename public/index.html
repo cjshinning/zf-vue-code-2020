@@ -11,23 +11,23 @@
 <body>
   <!-- watcher和dep的关系 一个watcher对应n个dep 一个dep对应多个watcher 多对多 -->
   <div id="app" style="color:red;background: blue;">
-    {{age}}
+    {{arr}}
   </div>
+  <!-- Object.freeze 冻结 内部不能增加get和set -->
   <script src="/dist/umd/vue.js"></script>
   <script>
     let vm = new Vue({
       el: '#app',
       data() {
         return {
-          age: { age: 100 }
+          arr: [[[1, 2, 3]]]
         }
       },
     })
 
     setTimeout(() => {
-      vm.age = 1000;
+      vm.arr[0][0].push(4, 5, 6);
       // 希望数据变化可以自动的重新执行渲染watcher
-      // vm._update(vm._render());
     }, 1000)
   </script>
 </body>

@@ -5,6 +5,7 @@ import Dep from './dep';
 
 class Observer {
   constructor(value) {
+    this.dep = new Dep(); //给数组
     // 如果vue数据的层次过多 需要地怪的去解析对象中的熟悉，依次增加set和get方法
     // vue3 proxy
     // value.__ob__ = this;  //给每一个监控过的对象都增加一个__ob__属性
@@ -35,7 +36,8 @@ class Observer {
 
 function defineReactive(data, key, value) {
   let dep = new Dep();
-  observe(value); //递归实现深度检测
+  // 这个value可能是数组，也可能是对象，返回的结果是observer的实例，当前的value对应的是observer
+  let childOb = observe(value); //递归实现深度检测
   Object.defineProperty(data, key, {
     configurable: true,
     enumerable: true,
@@ -43,6 +45,14 @@ function defineReactive(data, key, value) {
       console.log('取值');  //每个属性都对应自己的watcher
       if (Dep.target) { //如果当前有watcher
         dep.depend(); //意味着我要将watcher存起来
+        if (childOb) {  //数组的依赖收集
+          childOb.dep.depend(); //收集了数组的相关依赖
+
+          // 如果数组中还有数组
+          if (Array.isArray(value)) {
+            dependArray(value);
+          }
+        }
       }
       return value;
     },
@@ -54,6 +64,16 @@ function defineReactive(data, key, value) {
       dep.notify(); //通知依赖的watcher来进行更新操作
     }
   });
+}
+
+function dependArray(value) {
+  for (let i = 0; i < value.length; i++) {
+    let current = value[i];
+    current.__ob__ && current.__ob__.dep.depend();
+    if (Array.isArray(current)) {
+      dependArray(current);
+    }
+  }
 }
 
 // Object.defineProperty 不能兼容ie8以及以下 vue2无法兼容ie8版本

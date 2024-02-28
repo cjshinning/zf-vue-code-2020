@@ -36,6 +36,7 @@ methods.forEach(method => {
     }
     if (inserted) ob.oberverArray(inserted);
 
+    ob.dep.notify();  //如果用户调用了push方法，会通知当前这个dep去更新
     return result;
   }
 })
