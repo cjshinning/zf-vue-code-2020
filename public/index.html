@@ -9,7 +9,8 @@
 </head>
 
 <body>
-  <div id="app" style="color:red; background:blue">
+  <!-- watcher和dep的关系 一个watcher对应n个dep 一个dep对应多个watcher 多对多 -->
+  <div id="app" style="color:red;background: blue;">
     {{age}}
   </div>
   <script src="/dist/umd/vue.js"></script>
@@ -18,9 +19,7 @@
       el: '#app',
       data() {
         return {
-          age: {
-            age: 100
-          }
+          age: { age: 100 }
         }
       },
     })
