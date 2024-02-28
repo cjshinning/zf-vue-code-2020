@@ -25,10 +25,17 @@
       },
     })
 
-    setTimeout(() => {
-      vm.arr[0][0].push(4, 5, 6);
-      // 希望数据变化可以自动的重新执行渲染watcher
-    }, 1000)
+    vm.arr.push(1);
+    vm.arr.push(2);
+    vm.arr.push(3);
+    vm.arr.push(4);
+    // 希望数据变化可以自动的重新执行渲染watcher
+
+    vm.$nextTick(() => {
+      console.log(vm.$el.innerHTML);
+    })
+
+
   </script>
 </body>
 
