@@ -9,38 +9,27 @@
 </head>
 
 <body>
-  <div id="app" style="color: red;background: blue;">
-    <p>{{name}}</p>
-    <span>{{age}}</span>
-    <ul>
-      <li>{{name}}</li>
-      <li>{{age}}</li>
-    </ul>
+  <div id="app" style="color:red; background:blue">
+    {{age}}
   </div>
-  xxx
   <script src="/dist/umd/vue.js"></script>
   <script>
     let vm = new Vue({
       el: '#app',
       data() {
         return {
-          name: 'jenny',
-          age: 18
+          age: {
+            age: 100
+          }
         }
-      },
-      beforeCreate() {
-        console.log('user', this.age);
-      },
-      beforeMount() {
-        console.log(this.$el, '前');
-      },
-      mounted() {
-        console.log(this.$el, '后');
       },
     })
 
-    // vm.name => vm._data.name
-    console.log(vm.name);
+    setTimeout(() => {
+      vm.age = 1000;
+      // 希望数据变化可以自动的重新执行渲染watcher
+      // vm._update(vm._render());
+    }, 1000)
   </script>
 </body>
 

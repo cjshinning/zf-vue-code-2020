@@ -1,6 +1,7 @@
 // 把data中的数据 都使用Object.defineProperty重新定义 es5
 import { arrayMethods } from './array';
 import { isObject, def } from '../util/index';
+import Dep from './dep';
 
 class Observer {
   constructor(value) {
@@ -33,18 +34,24 @@ class Observer {
 }
 
 function defineReactive(data, key, value) {
+  let dep = new Dep();
   observe(value); //递归实现深度检测
   Object.defineProperty(data, key, {
     configurable: true,
     enumerable: true,
     get() { //获取值的时候做一些操作
+      console.log('取值');  //每个属性都对应自己的watcher
+      if (Dep.target) { //如果当前有watcher
+        dep.depend(); //意味着我要将watcher存起来
+      }
       return value;
     },
     set(newValue) { //设置值的时候做一些操作
+      console.log('更新数据');
       if (newValue === value) return;
-      console.log('值发生变化了');
       observe(newValue);  //继续劫持用户设置的值，因为有可能用户设置的值是个对象
       value = newValue;
+      dep.notify(); //通知依赖的watcher来进行更新操作
     }
   });
 }
