@@ -90,7 +90,7 @@ function updateProperties(vnode, oldProps = {}) {
   let oldStyle = oldProps.style || {};
   for (let key in oldStyle) {
     if (!newStyle[key]) {
-      el.style[key] = '';
+      el.style[key] = ''; //删除多余的
     }
   }
   for (let key in oldProps) {
@@ -102,6 +102,7 @@ function updateProperties(vnode, oldProps = {}) {
   for (let key in newProps) {
     if (key === 'style') {
       for (let styleName in newProps.style) {
+        // 新增样式
         el.style[styleName] = newProps.style[styleName];
       }
     } else if (key === 'class') {
