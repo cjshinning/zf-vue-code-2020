@@ -5,12 +5,11 @@ export function createElement(vm, tag, data = {}, ...children) {
   if (key) {
     delete data.key;
   }
-
-  if (isReservedTag) {
+  if (isReservedTag(tag)) {
     return vnode(tag, data, key, children, undefined);
   } else {
     // 组件 找到组件的定义
-    let Ctor = this.$options.components[tag];
+    let Ctor = vm.$options.components[tag];
     return createComponent(vm, tag, data, key, children, Ctor);
   }
 }
@@ -19,6 +18,15 @@ function createComponent(vm, tag, data, key, children, Ctor) {
   if (isObject(Ctor)) {
     Ctor = vm.$options._base.extend(Ctor);
   }
+  data.hook = {
+    init(vnode) {
+      // 当前组件的实例 就是componentInstance
+      let child = vnode.componentInstance = new Ctor({ _isComponent: true });
+      child.$mount();
+    }
+  }
+  // console.log(`vue-component-${Ctor.cid}-${tag}`);
+  // $vnode = 当前这个组件的 vnode 占位符vnode
   return vnode(`vue-component-${Ctor.cid}-${tag}`, data, key, undefined, { Ctor, children });
 }
 

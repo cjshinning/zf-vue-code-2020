@@ -1,4 +1,3 @@
-import { mergeOptions } from '../util/index';
 import initMixin from './mixin';
 import initAssetRegisters from './assets';
 import { ASSETS_TYPE } from './const';

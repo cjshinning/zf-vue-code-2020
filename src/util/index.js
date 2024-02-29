@@ -67,7 +67,7 @@ function mergeAssets(parentVal, childVal) {
   }
   return res;
 }
-strats.component = mergeAssets;
+strats.components = mergeAssets;
 
 export function mergeOptions(parent, child) {
   const options = {};
