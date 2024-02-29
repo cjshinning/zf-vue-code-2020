@@ -22,7 +22,12 @@ import { createElm, patch } from './vdom/patch';
 let vm1 = new Vue({
   data: { name: 'hello' }
 })
-let render1 = compileToFunction('<div id="app" a="1" style="background:red">{{name}}</div>')
+let render1 = compileToFunction(`<div id="app" a="1" style="background:red">
+  <div style="background:red" key="A">A</div>
+  <div style="background:yellow" key="B">B</div>
+  <div style="background:blue" key="C">C</div>
+  <div style="background:green" key="D">D</div>
+</div>`)
 let vnode = render1.call(vm1);
 
 let el = createElm(vnode);
@@ -33,7 +38,13 @@ let vm2 = new Vue({
   data: { name: 'jenny', age: 18 }
 })
 // 1. 标签不一致
-let render2 = compileToFunction('<div id="aaa" b="2" style="color:blue"></div>')
+let render2 = compileToFunction(`<div id="aaa" b="2" style="color:blue">
+  <div style="background:red" key="A">A</div>
+  <div style="background:yellow" key="B">B</div>
+  <div style="background:blue" key="C">C</div>
+  <div style="background:green" key="D">D</div>
+  <div style="background:purple" key="E">E</div>
+</div>`)
 let newVnode = render2.call(vm2);
 
 setTimeout(() => {

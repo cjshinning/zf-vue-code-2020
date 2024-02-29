@@ -57,6 +57,43 @@ export function patch(oldVnode, vnode) {
   // 递归创建真实节点，替换掉老的节点
 }
 
+function isSameVnode(oldVnode, newVnode) {
+  return (oldVnode.tag === newVnode.tag) && (oldVnode.key === newVnode.key);
+}
+
+function updateChildren(parent, oldChildren, newChildren) {
+  // vue采用的是双指针的方式
+
+  // vue在内部比对的过程中做了很多优化策略
+
+  let oldStartIndex = 0;
+  let oldStartVnode = oldChildren[0];
+  let oldEndIndex = oldChildren.length - 1;
+  let oldEndVnode = oldChildren[oldEndIndex];
+
+  let newStartIndex = 0;
+  let newStartVnode = newChildren[0];
+  let newEndIndex = newChildren.length - 1;
+  let newEndVnode = newChildren[newEndIndex];
+
+  // 在比对的过程中，新老虚拟节点有一方循环完毕就结束
+  while (oldStartIndex <= oldEndIndex && newStartIndex <= newEndIndex) {
+    if (isSameVnode(oldStartVnode, newStartVnode)) {
+      // 如果是同一个节点，就需要比对这两个元素的属性
+      patch(oldStartVnode, newStartVnode);  //比对开头节点
+      oldStartVnode = oldChildren[++oldStartIndex];
+      newStartVnode = newChildren[++newStartIndex];
+    }
+  }
+
+  if (newStartIndex <= newEndIndex) {
+    for (let i = newStartIndex; i <= newEndIndex; i++) {
+      // 将新增的元素直接进行插入
+      parent.appendChild(createElm(newChildren[i]));
+    }
+  }
+}
+
 function createComponent(vnode) {  //初始化的作用
   // 需要创建组件的实例
   let i = vnode.data;
