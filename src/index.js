@@ -22,7 +22,7 @@ import { createElm, patch } from './vdom/patch';
 let vm1 = new Vue({
   data: { name: 'hello' }
 })
-let render1 = compileToFunction('<div id="app">{{name}}</div>')
+let render1 = compileToFunction('<div id="app" a="1" style="background:red">{{name}}</div>')
 let vnode = render1.call(vm1);
 
 let el = createElm(vnode);
@@ -32,10 +32,14 @@ document.body.appendChild(el);
 let vm2 = new Vue({
   data: { name: 'jenny', age: 18 }
 })
-let render2 = compileToFunction('<div id="aaa">{{age}}<p>{{name}}</p></div>')
+// 1. 标签不一致
+let render2 = compileToFunction('<div id="aaa" b="2" style="color:blue">{{age}}<span>{{name}}</span></div>')
 let newVnode = render2.call(vm2);
 
-patch(vnode, newVnode); //传入两个虚拟节点 会在内部进行比对
+setTimeout(() => {
+  patch(vnode, newVnode); //传入两个虚拟节点 会在内部进行比对
+}, 3000)
 
+// 1.diff算法的特点是 平级比对，我们正常操作dom元素，很少涉及到父变成子，子变成父 O(n)
 
 export default Vue;

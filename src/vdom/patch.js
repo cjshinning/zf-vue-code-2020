@@ -17,8 +17,23 @@ export function patch(oldVnode, vnode) {
 
       return el;
     } else {
-      console.log(oldVnode, vnode);
+      // console.log(oldVnode, vnode);
       // 比对两个虚拟节点 操作真实的dom
+      // 1. 标签不一致直接替换即可
+      if (oldVnode.tag !== vnode.tag) {
+        oldVnode.el.parentNode.replaceChild(createElm(vnode), oldVnode.el);
+      }
+
+      // 2. 如果是文本，内容不一致直接替换掉文本
+      if (!oldVnode.tag) {
+        if (oldVnode.text !== vnode.text) {
+          oldVnode.el.textContent = vnode.text;
+        }
+      }
+
+      // 3. 说明标签一致，而且不是文本(比对属性是否一致)
+      let el = vnode.el = oldVnode.el;
+      updateProperties(vnode, oldVnode.data);
     }
   }
 
@@ -53,7 +68,7 @@ export function createElm(vnode) { //根据虚拟节点创建真实的节点
     }
 
     vnode.el = document.createElement(tag);
-    updateProperty(vnode);
+    updateProperties(vnode);
     children.forEach(child => { //递归创建儿子节点，将儿子节点放到父节点中
       return vnode.el.appendChild(createElm(child));
     })
@@ -64,9 +79,25 @@ export function createElm(vnode) { //根据虚拟节点创建真实的节点
   return vnode.el;
 }
 // 更新属性
-function updateProperty(vnode) {
-  let newProps = vnode.data;
+function updateProperties(vnode, oldProps = {}) {
+  let newProps = vnode.data || {};
+
   let el = vnode.el;
+
+  // 如果老的属性中有，新的属性中没有，在真实的dom上将这个属性删除掉
+
+  let newStyle = newProps.style || {};
+  let oldStyle = oldProps.style || {};
+  for (let key in oldStyle) {
+    if (!newStyle[key]) {
+      el.style[key] = '';
+    }
+  }
+  for (let key in oldProps) {
+    if (!newProps[key]) {
+      el.removeAttribute(key);
+    }
+  }
 
   for (let key in newProps) {
     if (key === 'style') {
