@@ -33,7 +33,7 @@ let vm2 = new Vue({
   data: { name: 'jenny', age: 18 }
 })
 // 1. 标签不一致
-let render2 = compileToFunction('<div id="aaa" b="2" style="color:blue">{{age}}<span>{{name}}</span></div>')
+let render2 = compileToFunction('<div id="aaa" b="2" style="color:blue"></div>')
 let newVnode = render2.call(vm2);
 
 setTimeout(() => {

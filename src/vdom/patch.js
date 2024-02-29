@@ -34,9 +34,26 @@ export function patch(oldVnode, vnode) {
       // 3. 说明标签一致，而且不是文本(比对属性是否一致)
       let el = vnode.el = oldVnode.el;
       updateProperties(vnode, oldVnode.data);
+
+      // 需要比对儿子
+      let oldChildren = oldVnode.children || [];
+      let newChildren = vnode.children || [];
+
+      if (oldChildren.length > 0 && newChildren.length > 0) {
+        // 新老都有儿子 需要对比里面的儿子
+        updateChildren(el, oldChildren, newChildren);
+      } else if (newChildren.length > 0) {
+        // 新的有孩子，老的没有孩子，直接将孩子虚拟节点转换成真实节点 插入即可
+        for (let i = 0; i < newChildren.length; i++) {
+          let child = newChildren[i];
+          el.appendChild(createElm(child));
+        }
+      } else if (oldChildren.length > 0) {
+        // 老的有孩子，新的没孩子
+        el.innerHTML = '';
+      }
     }
   }
-
   // 递归创建真实节点，替换掉老的节点
 }
 
