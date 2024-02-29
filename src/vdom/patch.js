@@ -1,6 +1,5 @@
 export function patch(oldVnode, vnode) {
   // 1.判断是更新还是要渲染
-
   if (!oldVnode) {
     // 这个是组件的挂载 vm.$mount()
     // 通过当前虚拟节点 创建元素并返回
@@ -17,6 +16,9 @@ export function patch(oldVnode, vnode) {
       parentElm.removeChild(oldElm);
 
       return el;
+    } else {
+      console.log(oldVnode, vnode);
+      // 比对两个虚拟节点 操作真实的dom
     }
   }
 
@@ -37,7 +39,7 @@ function createComponent(vnode) {  //初始化的作用
   }
 }
 
-function createElm(vnode) { //根据虚拟节点创建真实的节点
+export function createElm(vnode) { //根据虚拟节点创建真实的节点
   let { tag, children, key, data, text } = vnode;
   // 是标签就创建标签
   // 不是标签就是文本

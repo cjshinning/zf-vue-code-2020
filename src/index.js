@@ -15,4 +15,27 @@ lifecycleMixin(Vue);
 // 初始化全局的api
 initGlobalAPI(Vue);
 
+// demo 产生两个虚拟节点进行比对
+// template => render方法 => vnode
+import { compileToFunction } from './compiler/index';
+import { createElm, patch } from './vdom/patch';
+let vm1 = new Vue({
+  data: { name: 'hello' }
+})
+let render1 = compileToFunction('<div id="app">{{name}}</div>')
+let vnode = render1.call(vm1);
+
+let el = createElm(vnode);
+document.body.appendChild(el);
+
+
+let vm2 = new Vue({
+  data: { name: 'jenny', age: 18 }
+})
+let render2 = compileToFunction('<div id="aaa">{{age}}<p>{{name}}</p></div>')
+let newVnode = render2.call(vm2);
+
+patch(vnode, newVnode); //传入两个虚拟节点 会在内部进行比对
+
+
 export default Vue;
