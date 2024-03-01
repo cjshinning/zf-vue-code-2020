@@ -78,18 +78,40 @@ function updateChildren(parent, oldChildren, newChildren) {
 
   // 在比对的过程中，新老虚拟节点有一方循环完毕就结束
   while (oldStartIndex <= oldEndIndex && newStartIndex <= newEndIndex) {
+    // 优化向后插入的情况
     if (isSameVnode(oldStartVnode, newStartVnode)) {
       // 如果是同一个节点，就需要比对这两个元素的属性
       patch(oldStartVnode, newStartVnode);  //比对开头节点
       oldStartVnode = oldChildren[++oldStartIndex];
       newStartVnode = newChildren[++newStartIndex];
     }
+    // 优化向前插入的情况
+    else if (isSameVnode(oldEndVnode, newEndVnode)) {
+      patch(oldEndVnode, newEndVnode);
+      oldEndVnode = oldChildren[--oldEndIndex];
+      newEndVnode = newChildren[--newEndIndex];
+    }
+    // 头移尾
+    else if (isSameVnode(oldStartVnode, newEndVnode)) {
+      patch(oldStartVnode, newEndVnode);
+      parent.insertBefore(oldStartVnode.el, oldEndVnode.el.nextSibling);
+      oldStartVnode = oldChildren[++oldStartIndex];
+      newEndVnode = newChildren[--newEndIndex];
+    }
+    // 尾移头
+    else if (isSameVnode(oldEndVnode, newStartVnode)) {
+      patch(oldEndVnode, newStartVnode);
+      parent.insertBefore(oldEndVnode.el, oldStartVnode.el);
+      oldEndVnode = oldChildren[--oldEndIndex];
+      newStartVnode = newChildren[++newStartIndex];
+    }
   }
 
   if (newStartIndex <= newEndIndex) {
     for (let i = newStartIndex; i <= newEndIndex; i++) {
-      // 将新增的元素直接进行插入
-      parent.appendChild(createElm(newChildren[i]));
+      // 将新增的元素直接进行插入 （可能向前插，也可能向后插） insertBefor
+      let el = newChildren[newEndIndex + 1] == null ? null : newChildren[newEndIndex + 1].el;
+      parent.insertBefore(createElm(newChildren[i]), el);
     }
   }
 }
