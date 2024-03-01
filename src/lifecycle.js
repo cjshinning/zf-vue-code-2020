@@ -4,8 +4,18 @@ import { patch } from './vdom/patch';
 export function lifecycleMixin(Vue) {
   Vue.prototype._update = function (vnode) {
     const vm = this;
-    // 通过虚拟节点渲染出真实dom
-    vm.$el = patch(vm.$el, vnode);  //用虚拟节点创建出真实节点替换掉原有的$el
+
+    // 虚拟节点对应的内容
+    const prevVnode = vm._vnode;
+    // 第一次默认，不需要diff算法
+    vm._vnode = vnode;  //真实渲染的内容
+
+    if (!prevVnode) {
+      // 通过虚拟节点渲染出真实dom
+      vm.$el = patch(vm.$el, vnode);  //用虚拟节点创建出真实节点替换掉原有的$el
+    } else {
+      vm.$el = patch(prevVnode, vnode);
+    }
     // console.log(vnode);
   }
 }

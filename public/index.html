@@ -9,11 +9,24 @@
 </head>
 
 <body>
-  <div id="app"></div>
+  <div id="app">
+    <div>hello</div>
+    <span>{{name}}</span>
+  </div>
   <script src="/dist/umd/vue.js"></script>
   <script>
     // 可以在每次渲染的时候 进行比对
     // 比对的是虚拟节点，如果标签一致就复用，去增加新的属性
+
+    let vm = new Vue({
+      el: '#app',
+      data: {
+        name: 'jenny'
+      }
+    })
+    setTimeout(() => {
+      vm.name = 'jack';
+    }, 3000)
   </script>
 </body>
 
