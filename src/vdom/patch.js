@@ -76,10 +76,28 @@ function updateChildren(parent, oldChildren, newChildren) {
   let newEndIndex = newChildren.length - 1;
   let newEndVnode = newChildren[newEndIndex];
 
+  const makeIndexByKey = (children) => {
+    let map = {};
+    children.forEach((item, index) => {
+      if (item.key) {
+        // 根据key创建一个映射表
+        map[item.key] = index;
+      }
+    })
+    return map;
+  }
+  let map = makeIndexByKey(oldChildren);
+  console.log(map);
+
   // 在比对的过程中，新老虚拟节点有一方循环完毕就结束
   while (oldStartIndex <= oldEndIndex && newStartIndex <= newEndIndex) {
+    if (!oldStartVnode) {
+      oldStartVnode = oldChildren[++oldStartIndex];
+    } else if (!oldEndVnode) {
+      oldEndVnode = oldChildren[--oldEndIndex];
+    }
     // 优化向后插入的情况
-    if (isSameVnode(oldStartVnode, newStartVnode)) {
+    else if (isSameVnode(oldStartVnode, newStartVnode)) {
       // 如果是同一个节点，就需要比对这两个元素的属性
       patch(oldStartVnode, newStartVnode);  //比对开头节点
       oldStartVnode = oldChildren[++oldStartIndex];
@@ -104,6 +122,19 @@ function updateChildren(parent, oldChildren, newChildren) {
       parent.insertBefore(oldEndVnode.el, oldStartVnode.el);
       oldEndVnode = oldChildren[--oldEndIndex];
       newStartVnode = newChildren[++newStartIndex];
+    } else {
+      // 暴力比对
+      let moveIndex = map[newStartVnode.key];
+      if (!moveIndex) {
+        parent.insertBefore(createElm(newStartVnode), oldStartVnode.el);
+      } else {
+        // 如果在映射表中查找到了，则直接将元素移走，并将当时位置置为空
+        let moveVnode = oldChildren[moveIndex]; //要移动的元素
+        oldChildren[moveIndex] = undefined;
+        parent.insertBefore(moveVnode.el, oldStartVnode.el);
+        patch(moveVnode, newStartVnode);
+      }
+      newStartVnode = newChildren[++newStartIndex];
     }
   }
 
@@ -112,6 +143,15 @@ function updateChildren(parent, oldChildren, newChildren) {
       // 将新增的元素直接进行插入 （可能向前插，也可能向后插） insertBefor
       let el = newChildren[newEndIndex + 1] == null ? null : newChildren[newEndIndex + 1].el;
       parent.insertBefore(createElm(newChildren[i]), el);
+    }
+  }
+
+  if (oldStartIndex <= oldEndIndex) {
+    for (let i = oldStartIndex; i <= oldEndIndex; i++) {
+      let child = oldChildren[i];
+      if (child != undefined) {
+        parent.removeChild(child.el);
+      }
     }
   }
 }

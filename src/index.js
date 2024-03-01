@@ -26,7 +26,7 @@ let render1 = compileToFunction(`<div id="app" a="1" style="background:red">
   <div style="background:red" key="A">A</div>
   <div style="background:yellow" key="B">B</div>
   <div style="background:blue" key="C">C</div>
-  <div style="background:green" key="D">D</div>
+  <div style="background:pink" key="E">E</div>
 </div>`)
 let vnode = render1.call(vm1);
 
@@ -39,10 +39,11 @@ let vm2 = new Vue({
 })
 // 1. 标签不一致
 let render2 = compileToFunction(`<div id="aaa" b="2" style="color:blue">
-  <div style="background:green" key="D">D</div>
+  <div style="background:green" key="Q">Q</div>
   <div style="background:red" key="A">A</div>
-  <div style="background:yellow" key="B">B</div>
+  <div style="background:yellow" key="F">F</div>
   <div style="background:blue" key="C">C</div>
+  <div style="background:purple" key="N">N</div>
 </div>`)
 let newVnode = render2.call(vm2);
 
